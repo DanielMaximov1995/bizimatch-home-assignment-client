@@ -3,9 +3,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { MoreVertical, Edit, Trash2 } from "lucide-react";
-import { updateExpenseCategory, deleteExpense } from "@/lib/api";
+import { deleteExpense } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -48,28 +47,13 @@ const DOC_TYPE_LABELS = {
 };
 
 const ExpensesTable = ({ expenses, onUpdate }: ExpensesTableProps) => {
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const handleCategoryChange = async (expenseId: string, category: string) => {
-    setUpdatingId(expenseId);
-
-    try {
-      const response = await updateExpenseCategory(expenseId, category);
-
-      if (response.success) {
-        toast.success("קטגוריית ההוצאה עודכנה בהצלחה");
-        onUpdate();
-      } else {
-        toast.error(response.error || "לא ניתן לעדכן את הקטגוריה");
-      }
-    } catch (error) {
-      toast.error("אירעה שגיאה בעת עדכון הקטגוריה");
-    } finally {
-      setUpdatingId(null);
-    }
+  const getCategoryLabel = (category: string) => {
+    const cat = CATEGORIES.find((c) => c.value === category);
+    return cat ? cat.label : category;
   };
 
   const handleEdit = (expense: Expense) => {
@@ -131,7 +115,7 @@ const ExpensesTable = ({ expenses, onUpdate }: ExpensesTableProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-h-[200px]">
           <table className="w-full">
             <thead>
               <tr className="border-b">
@@ -166,31 +150,19 @@ const ExpensesTable = ({ expenses, onUpdate }: ExpensesTableProps) => {
                   <td className="px-4 py-3 text-sm">
                     {DOC_TYPE_LABELS[expense.docType]}
                   </td>
-                  <td className="px-4 py-3">
-                    <Select
-                      value={expense.category}
-                      onChange={(e) =>
-                        handleCategoryChange(expense.id, e.target.value)
-                      }
-                      disabled={updatingId === expense.id}
-                      className="w-40"
-                    >
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </option>
-                      ))}
-                    </Select>
+                  <td className="px-4 py-3 text-sm">
+                    {getCategoryLabel(expense.category)}
                   </td>
                   <td className="px-4 py-3">
                     <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <MoreVertical className="h-4 w-4" />
+                      <DropdownMenuTrigger className="h-8 w-8 p-0 hover:bg-muted">
+                        <MoreVertical className="h-4 w-4 text-muted-foreground" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className="w-32">
                         <DropdownMenuItem
                           onClick={() => handleEdit(expense)}
                           disabled={deletingId === expense.id}
+                          className="cursor-pointer"
                         >
                           <Edit className="h-4 w-4 ml-2" />
                           ערוך
@@ -199,6 +171,7 @@ const ExpensesTable = ({ expenses, onUpdate }: ExpensesTableProps) => {
                           variant="destructive"
                           onClick={() => handleDelete(expense.id)}
                           disabled={deletingId === expense.id}
+                          className="cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4 ml-2" />
                           מחק
