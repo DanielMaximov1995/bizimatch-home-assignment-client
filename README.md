@@ -1,4 +1,4 @@
-# מערכת ניהול חשבוניות והוצאות - לקוח
+# מערכת ניהול חשבוניות והוצאות - צד לקוח
 
 ממשק משתמש מודרני לניהול חשבוניות והוצאות לעסק, עם תמיכה מלאה בעברית ו-RTL.
 
@@ -23,20 +23,15 @@
 - תצוגה וסינון הוצאות בטבלה
 - עריכה ומחיקה של הוצאות
 - סיווג הוצאות לקטגוריות
-- ממשק בעברית עם תמיכה מלאה ב-RTL
 
 ## הפעלת המערכת
-
-**דרישות:**
-- Node.js 18+
-- npm או yarn
 
 **התקנה:**
 ```bash
 npm install
 ```
 
-**הגדרת משתני סביבה (.env.local):**
+**הגדרת משתני סביבה (.env):**
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ```
@@ -50,8 +45,8 @@ npm start      # הרצה בייצור
 
 ## טכנולוגיות
 
-- **Next.js 15** - Framework ל-React עם Server Components
-- **React 18** - ספריית UI
+- **Next.js** - Framework ל-React עם Server Components
+- **React.js** - ספריית UI
 - **TypeScript** - Type safety
 - **TailwindCSS** - Styling
 - **Sonner** - מערכת התראות (toast notifications)
